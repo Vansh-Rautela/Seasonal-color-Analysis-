@@ -8,26 +8,36 @@ class PaletteSuggester:
             self.palettes = json.load(f)
 
     def get_palette(self, analysis_results):
+        """
+        Suggests a palette using a Tonal-first approach.
+        """
+        tonal_type = analysis_results['tonal_type']
         undertone = analysis_results['undertone']
-        contrast = analysis_results['contrast']
-        
-        # Main seasonal classification
-        if undertone == 'Cool':
-            season = 'Winter' if contrast == 'High' else 'Summer'
-        else: # Warm undertone
-            season = 'Spring' if contrast == 'High' else 'Autumn'
-        
-        # Fine-tuning to a specific archetype (simple example)
-        # This can be expanded with more rules based on brightness
-        if season == 'Winter':
-            final_season = 'Cool Winter'
-        elif season == 'Summer':
-            final_season = 'Soft Summer'
-        elif season == 'Spring':
-            final_season = 'Light Spring'
-        else: # Autumn
-            final_season = 'Warm Autumn'
+        brightness = analysis_results['brightness']
+        chroma = analysis_results['chroma']
 
+        # Determine the final season based on the primary tonal characteristic
+        final_season = "Unknown"
+        if tonal_type == 'Clear':
+            final_season = 'Clear Winter' if undertone == 'Cool' else 'Clear Spring'
+        elif tonal_type == 'Cool':
+            final_season = 'Cool Summer' if brightness == 'Light' else 'Cool Winter'
+        elif tonal_type == 'Warm':
+            final_season = 'Warm Spring' if brightness == 'Light' else 'Warm Autumn'
+        elif tonal_type == 'Soft':
+            final_season = 'Soft Summer' if undertone == 'Cool' else 'Soft Autumn'
+        elif tonal_type == 'Light':
+            final_season = 'Light Summer' if undertone == 'Cool' else 'Light Spring'
+        elif tonal_type == 'Deep':
+            final_season = 'Deep Winter' if undertone == 'Cool' else 'Deep Autumn'
+        
+        # Fallback for medium types
+        if final_season == "Unknown":
+            if undertone == 'Cool':
+                final_season = 'Cool Summer' if chroma == 'Soft' else 'Cool Winter'
+            else:
+                final_season = 'Warm Autumn' if chroma == 'Soft' else 'Warm Spring'
+        
         palette = self.palettes.get(final_season)
         if not palette:
             raise KeyError(f"Palette for '{final_season}' not found in palettes.json")

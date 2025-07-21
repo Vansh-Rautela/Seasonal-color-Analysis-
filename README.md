@@ -1,82 +1,34 @@
-# Seasonal Color Analysis
+# Advanced Seasonal Color Analysis
 
-A Python-based tool that analyzes facial features and suggests personalized color palettes based on seasonal color theory. The application helps users discover their most flattering colors for clothing, makeup, and accessories.
+An AI-powered tool that performs a sophisticated analysis of facial features to suggest highly accurate and personalized color palettes. This upgraded model goes beyond basic rules, integrating advanced color theory, lighting correction, and tonal analysis to provide expert-level recommendations for clothing, makeup, and accessories.
 
-## 🌟 Features
+## ✨ Upgraded Features
 
-- **Facial Feature Extraction**: Automatically detects and analyzes facial features
-- **Color Analysis**: Determines skin undertones, brightness, and contrast levels
-- **Personalized Palette**: Suggests colors that complement your natural features
-- **Seasonal Analysis**: Categorizes users into seasonal color palettes (Spring, Summer, Autumn, Winter)
+- **Lighting-Independent Analysis**: Implements a **Grey World** algorithm to neutralize color casts from ambient light, ensuring a true reading of skin tone.
+- **High-Accuracy Feature Extraction**: Uses a **6-point skin sampling method** inspired by academic research, with outlier removal to find the most representative skin, hair, and eye colors.
+- **Advanced Tonal Classification**: Determines your primary color characteristic (**Light, Deep, Warm, Cool, Clear, or Soft**) for a more personalized and accurate result than the rigid 12-season model.
+- **Comprehensive 12-Season Palettes**: Includes a full database of the 12 seasonal archetypes for nuanced and detailed color suggestions.
 
-## 🛠️ Installation
+## 🚀 How to Use
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Vansh-Rautela/Seasonal-color-Analysis-.git
-   cd Seasonal-color-Analysis-
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/Vansh-Rautela/Seasonal-color-Analysis-.git](https://github.com/Vansh-Rautela/Seasonal-color-Analysis-.git)
+    cd Seasonal-color-Analysis-
+    ```
 
-2. Create and activate a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+2.  **Create and activate a virtual environment:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
 
-3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-## 🚀 Usage
-
-Run the analysis on an image:
-```bash
-python main.py --image path/to/your/image.jpg
-```
-
-### Example:
-```bash
-python main.py --image photo.jpg
-```
-
-## 🏗️ Project Structure
-
-```
-Seasonal-color-Analysis/
-├── analysis/               # Facial feature extraction and analysis
-│   ├── __init__.py
-│   ├── color_analyzer.py   # Color analysis logic
-│   └── feature_extractor.py # Feature extraction from images
-├── palette/                # Color palette management
-│   ├── __init__.py
-│   ├── palettes.json       # Color palette definitions
-│   └── suggester.py        # Palette suggestion logic
-├── utils/                  # Utility functions
-│   ├── __init__.py
-│   └── color_utils.py      # Color manipulation utilities
-├── main.py                 # Main application entry point
-└── requirements.txt        # Project dependencies
-```
-
-## 📋 Requirements
-
-- Python 3.7+
-- OpenCV
-- NumPy
-- Pillow
-- scikit-learn
-- Matplotlib
-- MediaPipe
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📬 Contact
-
-For any questions or feedback, please open an issue on GitHub.
+4.  **Run the analysis:**
+    ```bash
+    python main.py --image path/to/your/image.jpg
+    ```

@@ -1,80 +1,48 @@
-"""
-Color analysis module for determining seasonal color palettes.
-"""
-from utils.color_utils import rgb_to_cielab
-
-class ColorAnalyzer:
-    """
-    Analyzes colors to determine the most flattering seasonal palette.
-    """
-    
-    def __init__(self):
-        self.palettes = {}
-        from utils.color_utils import rgb_to_cielab
+from utils.color_utils import rgb_to_cielab, calculate_chroma
 
 class ColorAnalyzer:
     def analyze(self, dominant_colors):
         """
-        Analyzes dominant colors to determine undertone, brightness, and contrast.
+        Analyzes dominant colors to determine undertone, brightness, contrast, chroma, and tonal type.
         """
-        # Convert all colors to CIELAB
+        if 'skin' not in dominant_colors or 'hair' not in dominant_colors or 'eyes' not in dominant_colors:
+            raise ValueError("Incomplete feature data. Skin, hair, and eye color are required.")
+
         lab_colors = {k: rgb_to_cielab(v) for k, v in dominant_colors.items()}
+        l_skin, a_skin, b_skin = lab_colors['skin']
+        l_hair = lab_colors['hair'][0]
         
-        skin_lab = lab_colors.get('skin')
-        if skin_lab is None:
-            raise ValueError("Dominant skin color could not be determined.")
-            
-        l_skin, a_skin, b_skin = skin_lab
-        
-        # 1. Determine Undertone (Heuristic)
-        # b* > a* indicates more yellow than red. High b* is a strong indicator of warmth.
-        # This is a heuristic and the most subjective part of the analysis.
+        # 1. Determine Brightness (Value)
+        brightness = 'Light' if l_skin > 65 else 'Dark' if l_skin < 45 else 'Medium'
+
+        # 2. Determine Undertone (Hue)
         undertone = 'Warm' if b_skin > a_skin and b_skin > 15.0 else 'Cool'
-        
-        # 2. Determine Brightness
-        if l_skin > 65:
-            brightness = 'Light'
-        elif l_skin < 45:
-            brightness = 'Dark'
-        else:
-            brightness = 'Medium'
-        
-        # 3. Determine Contrast
+
+        # 3. Determine Chroma (Saturation)
+        chroma_val = calculate_chroma(a_skin, b_skin)
+        chroma = 'Bright' if chroma_val > 40 else 'Soft'
+
+        # 4. Determine Contrast
         l_values = [v[0] for v in lab_colors.values()]
         contrast_val = max(l_values) - min(l_values)
+        contrast = 'High' if contrast_val > 55 else 'Low' if contrast_val < 30 else 'Medium'
         
-        if contrast_val > 55:
-            contrast = 'High'
-        elif contrast_val < 30:
-            contrast = 'Low'
-        else:
-            contrast = 'Medium'
+        # 5. Determine Primary Tonal Characteristic
+        tonal_type = self._get_tonal_type(brightness, undertone, chroma, contrast)
             
         return {
+            'tonal_type': tonal_type,
             'undertone': undertone,
             'brightness': brightness,
-            'contrast': contrast
+            'chroma': chroma,
+            'contrast': contrast,
         }
-    def load_palettes(self, palette_file):
-        """
-        Load color palettes from a JSON file.
-        
-        Args:
-            palette_file (str): Path to the JSON file containing color palettes.
-        """
-        import json
-        with open(palette_file, 'r') as f:
-            self.palettes = json.load(f)
-    
-    def analyze_image(self, image_path):
-        """
-        Analyze an image to determine the best seasonal color palette.
-        
-        Args:
-            image_path (str): Path to the image file to analyze.
-            
-        Returns:
-            dict: Analysis results including suggested palette and confidence.
-        """
-        # Implementation will be added later
-        pass
+
+    def _get_tonal_type(self, brightness, undertone, chroma, contrast):
+        if brightness == 'Light' and chroma == 'Soft': return 'Light'
+        if brightness == 'Dark' and chroma == 'Soft': return 'Deep'
+        if undertone == 'Warm' and chroma == 'Soft': return 'Warm'
+        if undertone == 'Cool' and chroma == 'Soft': return 'Cool'
+        if chroma == 'Bright': return 'Clear'
+        if chroma == 'Soft' and contrast == 'Low': return 'Soft'
+        return "Medium" # Fallback
